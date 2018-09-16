@@ -1,0 +1,14 @@
+{
+  "name": "multi-mini-monitor",
+  "version": "0.0.1",
+  "description": "Desktop app to monitor multiple remote endpoints.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alex Sokolsky",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^2.0.9"
+  }
+}

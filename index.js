@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require('electron');
+const minimist = require('minimist');
 
 let win;
 
@@ -45,3 +46,20 @@ app.on('activate', () => {
   if(win== null) createElectronShell();
 });
 
+/**
+ *  Parse the command line
+ */
+const args = minimist(process.argv.slice(2), {
+  alias: {
+      h: 'help',
+      v: 'version',
+  },
+  default: {
+  }
+});
+console.log(`Args: ${args}`);
+for(let i = 0; i < args.length; i++) {
+  let arg = args[i];
+  console.log(arg);
+}
+console.log(args);

@@ -1,14 +1,24 @@
 {
   "name": "multi-mini-monitor",
+  "description": "Display status of multiple remote systeminformation-api REST services.",
   "version": "0.0.1",
-  "description": "Desktop app to monitor multiple remote endpoints.",
   "main": "index.js",
+  "author": "Alex Sokolsky <asokolsky@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^2.0.9",
+    "minimist": "^1.2.0"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Alex Sokolsky",
-  "license": "ISC",
-  "dependencies": {
-    "electron": "^2.0.9"
-  }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asokolsky/multi-mini-monitor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/asokolsky/multi-mini-monitor/issues"
+  },
+  "homepage": "https://github.com/asokolsky/multi-mini-monitor#readme"
 }

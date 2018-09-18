@@ -1,5 +1,9 @@
-const { app, BrowserWindow, Menu} = require('electron');
+'use strict';
+
+const { app, BrowserWindow, Menu, dialog} = require('electron');
 const minimist = require('minimist');
+
+let win;
 
 const menuTemplate = [
   {
@@ -7,10 +11,11 @@ const menuTemplate = [
   submenu: [
     {
       label: 'Exit',
-      accelerator: 'CmdOrCtrl+Q',
-      click () { 
-        app.quit() 
-      }
+      role: 'quit',
+      //accelerator: 'CmdOrCtrl+Q',
+      //click () { 
+      //  app.quit() 
+      //}
     }
   ]
   }, 
@@ -20,14 +25,17 @@ const menuTemplate = [
     label: 'About',
     accelerator: 'F1',
     click () { 
-      app.quit() 
+      //app.quit() 
+      dialog.showMessageBox(win, {
+        type: 'info',
+        title: 'About',
+        message: 'Awesome App\nVersion 0.0.1',
+        buttons: ['OK']
+      });
     }
   }]
   }
 ];
-
-let win;
-
 // index.html file path - This should be from the webpack build path
 //const appUrl = `file://${__dirname}/build/index.html`;
 
@@ -44,7 +52,7 @@ function createElectronShell() {
   });
   // Load the html file into the browser window
   //win.loadURL(appUrl);
-  win.loadFile('index.html')
+  win.loadFile('index.html');
   // Release the variable reference when the window is closed
   win.on('closed', () => { 
     win = null 

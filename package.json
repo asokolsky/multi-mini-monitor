@@ -1,6 +1,6 @@
 {
   "name": "multi-mini-monitor",
-  "description": "Display status of multiple remote systeminformation-api REST services.",
+  "description": "Display status of multiple remote systeminformation-api services.",
   "version": "0.0.1",
   "main": "index.js",
   "author": "Alex Sokolsky <asokolsky@gmail.com>",

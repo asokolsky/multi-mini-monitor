@@ -1,9 +1,24 @@
 'use strict';
 
-const { app, BrowserWindow, Menu, dialog} = require('electron');
+const { app, BrowserWindow, Menu, dialog, clipboard} = require('electron');
 const minimist = require('minimist');
-
+const pjson = require('./package.json');
 let win;
+
+const strFullVersion = `${pjson.name}\r\n\
+${pjson.description}\r\n\
+Version ${pjson.version}\r\n\
+${pjson.author}\r\n\r\n\
+Platform ${process.platform}\r\n\
+Electron ${process.versions.electron}\r\n\
+Chromium ${process.versions.chrome}\r\n\
+Node ${process.versions.node}\r\n\
+V8 ${process.versions.v8}`;
+
+function trace(msg) {
+  
+  console.log(msg);
+}
 
 const menuTemplate = [
   {
@@ -12,7 +27,7 @@ const menuTemplate = [
     {
       label: 'Exit',
       role: 'quit',
-      //accelerator: 'CmdOrCtrl+Q',
+      accelerator: 'CmdOrCtrl+Q',
       //click () { 
       //  app.quit() 
       //}
@@ -25,17 +40,20 @@ const menuTemplate = [
     label: 'About',
     accelerator: 'F1',
     click () { 
-      //app.quit() 
-      dialog.showMessageBox(win, {
-        type: 'info',
-        title: 'About',
-        message: 'Awesome App\nVersion 0.0.1',
-        buttons: ['OK']
-      });
+      dialog.showMessageBox(
+        win, 
+        {type: 'info', title: 'About', message: strFullVersion, buttons: ['Copy', 'OK']},
+        (response, checkboxChecked) => {
+          if(response === 0) {
+            clipboard.writeText(strFullVersion);
+          }
+        }
+      )
     }
   }]
   }
 ];
+
 // index.html file path - This should be from the webpack build path
 //const appUrl = `file://${__dirname}/build/index.html`;
 
@@ -96,7 +114,7 @@ app.on('activate', () => {
 /**
  *  Parse the command line
  */
-console.log(process.argv);
+trace(process.argv);
 let args = minimist(process.argv.slice(2), {
   alias: {
       h: 'help',
@@ -105,13 +123,14 @@ let args = minimist(process.argv.slice(2), {
   default: {
   }
 });
-console.log(`Args: ${args}`);
-console.log(`Args.length: ${args.length}`);
+trace(`Args: ${args}`);
+trace(`Args.length: ${args.length}`);
 args = args._;
-console.log(`Args: ${args}`);
-console.log(`Args.length: ${args.length}`);
+trace(`Args: ${args}`);
+trace(`Args.length: ${args.length}`);
 for(let i = 0; i < args.length; i++) {
   let arg = args[i];
-  console.log(arg);
+  trace(arg);
 }
-console.log(args);
+trace(args);
+

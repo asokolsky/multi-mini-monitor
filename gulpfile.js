@@ -1,9 +1,15 @@
-var gulp = require("gulp");
-var ts = require("gulp-typescript");
-var tsProject = ts.createProject("tsconfig.json");
+'use strict';
 
-gulp.task("default", function () {
+const gulp = require('gulp');
+const ts = require('gulp-typescript');
+const tsProject = ts.createProject('tsconfig.json');
+
+// Default
+gulp.task('default', ['compile']);
+
+gulp.task('compile', function () {
     return tsProject.src()
         .pipe(tsProject())
         .js.pipe(gulp.dest("built"));
 });
+

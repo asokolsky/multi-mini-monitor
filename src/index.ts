@@ -1,9 +1,9 @@
 'use strict';
 
-const { app, BrowserWindow, Menu, dialog, clipboard} = require('electron');
-const minimist = require('minimist');
-const pjson = require('./package.json');
-let win;
+import { app, BrowserWindow, Menu, dialog, clipboard} from "electron";
+import minimist = require("minimist");
+const pjson = require('../package.json');
+let win: BrowserWindow;
 
 const strFullVersion = `${pjson.name}\r\n\
 ${pjson.description}\r\n\
@@ -15,7 +15,7 @@ Chromium ${process.versions.chrome}\r\n\
 Node ${process.versions.node}\r\n\
 V8 ${process.versions.v8}`;
 
-function trace(msg) {
+function trace(msg: any) {
   
   console.log(msg);
 }
@@ -114,7 +114,7 @@ app.on('activate', () => {
 /**
  *  Parse the command line
  */
-trace(process.argv);
+//trace(process.argv);
 let args = minimist(process.argv.slice(2), {
   alias: {
       h: 'help',
@@ -125,12 +125,12 @@ let args = minimist(process.argv.slice(2), {
 });
 trace(`Args: ${args}`);
 trace(`Args.length: ${args.length}`);
-args = args._;
-trace(`Args: ${args}`);
-trace(`Args.length: ${args.length}`);
-for(let i = 0; i < args.length; i++) {
-  let arg = args[i];
-  trace(arg);
+let endpoints = args._;
+trace(`Args: ${endpoints}`);
+trace(`Args.length: ${endpoints.length}`);
+for(let i = 0; i < endpoints.length; i++) {
+  let endpoint = endpoints[i];
+  trace(endpoint);
 }
-trace(args);
+trace(endpoints);
 

@@ -2,17 +2,21 @@
   "name": "multi-mini-monitor",
   "description": "Display status of multiple remote systeminformation-api services.",
   "version": "0.0.1",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "author": "Alex Sokolsky <asokolsky@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "electron": "^2.0.9",
     "minimist": "^1.2.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^5.0.0-alpha.3",
+    "typescript": "^3.0.3"
+  },
   "scripts": {
-      "start": "electron .",
-      "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",

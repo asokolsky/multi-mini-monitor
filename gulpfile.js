@@ -10,6 +10,6 @@ gulp.task('default', ['compile']);
 gulp.task('compile', function () {
     return tsProject.src()
         .pipe(tsProject())
-        .js.pipe(gulp.dest("built"));
+        .js.pipe(gulp.dest("dist"));
 });
 

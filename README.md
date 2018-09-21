@@ -14,3 +14,8 @@ npm install
 # Run the app
 npm start
 ```
+# TODO
+
+This is a work in progress.
+
+Build works as a VSCode task (using tsc).  Gulp is still broken.

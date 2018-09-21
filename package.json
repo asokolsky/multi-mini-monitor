@@ -6,12 +6,13 @@
   "author": "Alex Sokolsky <asokolsky@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "electron": "^2.0.9",
+    "@types/minimist": "^1.2.0",
+    "axios": "^0.18.0",
+    "electron": "^2.0.10",
     "minimist": "^1.2.0"
   },
   "devDependencies": {
-    "electron": "2.0.10",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.0",
     "gulp-typescript": "^5.0.0-alpha.3",
     "typescript": "^3.0.3"
   },

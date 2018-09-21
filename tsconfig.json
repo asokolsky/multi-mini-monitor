@@ -1,10 +1,17 @@
 {
-    "files": [
-        "src/index.ts"
-    ],
     "compilerOptions": {
         "noImplicitAny": true,
-        "target": "es5",
-        "outDir": "./built",
-    }
+        "target": "es6",
+        "outDir": "./dist",
+        "moduleResolution": "node",
+        "module": "commonjs"
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "**/*.spec.ts"
+    ]    
 }

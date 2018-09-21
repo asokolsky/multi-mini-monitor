@@ -1,8 +1,57 @@
 'use strict';
 
-import { app, BrowserWindow, Menu, dialog, clipboard} from "electron";
+import { app, BrowserWindow, Menu, dialog, clipboard} from 'electron';
 import minimist = require("minimist");
+import {Endpoint} from './endpoint';
 const pjson = require('../package.json');
+
+function trace2(prefix: string, msg: any) {  
+  console.log(prefix, msg);
+}
+function trace(msg: any) {  
+  console.log(msg);
+}
+
+/**
+ *  Parse the command line
+ */
+//trace(process.argv);
+let args = minimist(process.argv.slice(2), {
+  alias: {
+      h: 'help',
+      v: 'version',
+  },
+  default: {
+  }
+});
+//trace(args);
+let strEndpoints = args._;
+
+if(args.help) {
+  console.log('Command line spec: host1:port1 [host2:port2]');
+  process.exit(0);
+} else if(strEndpoints.length == 0) {
+  console.log('No endpoints specified.  Exiting.  Use --help to learn about command line spec.');
+  process.exit(0);
+}
+//trace(`Args: ${strEndpoints}`);
+//trace(`Args.length: ${strEndpoints.length}`);
+//trace('Array of strings:');
+//trace(strEndpoints);
+/**
+ * Global array for storing the endpoints - initiate connection
+ */
+let endpoints: Endpoint[] = new Array(strEndpoints.length);
+
+for(let i = 0; i < strEndpoints.length; i++) {
+  let endpoint = strEndpoints[i];
+  //trace(endpoint);
+  endpoints[i] = new Endpoint(endpoint);
+}
+
+/**
+ * Start building GUI
+ */
 let win: BrowserWindow;
 
 const strFullVersion = `${pjson.name}\r\n\
@@ -14,11 +63,6 @@ Electron ${process.versions.electron}\r\n\
 Chromium ${process.versions.chrome}\r\n\
 Node ${process.versions.node}\r\n\
 V8 ${process.versions.v8}`;
-
-function trace(msg: any) {
-  
-  console.log(msg);
-}
 
 const menuTemplate = [
   {
@@ -110,27 +154,4 @@ app.on('activate', () => {
   if(win == null) 
     createElectronShell();
 });
-
-/**
- *  Parse the command line
- */
-//trace(process.argv);
-let args = minimist(process.argv.slice(2), {
-  alias: {
-      h: 'help',
-      v: 'version',
-  },
-  default: {
-  }
-});
-trace(`Args: ${args}`);
-trace(`Args.length: ${args.length}`);
-let endpoints = args._;
-trace(`Args: ${endpoints}`);
-trace(`Args.length: ${endpoints.length}`);
-for(let i = 0; i < endpoints.length; i++) {
-  let endpoint = endpoints[i];
-  trace(endpoint);
-}
-trace(endpoints);
 

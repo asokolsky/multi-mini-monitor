@@ -16,7 +16,7 @@ function trace(msg: any) {
  *  Parse the command line
  */
 //trace(process.argv);
-let args = minimist(process.argv.slice(2), {
+const args = minimist(process.argv.slice(2), {
   alias: {
       h: 'help',
       v: 'version',
@@ -25,7 +25,7 @@ let args = minimist(process.argv.slice(2), {
   }
 });
 //trace(args);
-let strEndpoints = args._;
+const strEndpoints = args._;
 
 if(args.help) {
   console.log('Command line spec: host1:port1 [host2:port2]');
@@ -41,13 +41,14 @@ if(args.help) {
 /**
  * Global array for storing the endpoints - initiate connection
  */
-let endpoints: Endpoint[] = new Array(strEndpoints.length);
+const endpoints: Endpoint[] = new Array(strEndpoints.length);
 
 for(let i = 0; i < strEndpoints.length; i++) {
   let endpoint = strEndpoints[i];
   //trace(endpoint);
   endpoints[i] = new Endpoint(endpoint);
 }
+console.log("index:", process.type);
 
 /**
  * Start building GUI
@@ -120,7 +121,7 @@ function createElectronShell() {
     win = null 
   });
   // Opens the chrome devtool
-  //win.webContents.openDevTools();
+  win.webContents.openDevTools();
   win.once('ready-to-show', () => {
     win.show();
   });

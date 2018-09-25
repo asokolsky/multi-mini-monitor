@@ -1,7 +1,7 @@
 'use strict';
 
-import { URL } from 'url';
 import axios from 'axios';
+import { onEndpointNew, onEndpointUpdate } from './index';
 
 /**
  * This is a abstraction of an endpoint, running systeminformation REST service.
@@ -42,20 +42,20 @@ export class Endpoint {
   //m_diskLayout: JSON[];
 
   /** begin dynamic data */
-  m_time: JSON; // { current: 1537738139158, uptime: 162844, timezone: 'GMT-0700', timezoneName: 'PDT' }
-  m_cpuCurrentspeed: JSON; // { min: 2.08, max: 2.37, avg: 2.22, cores: [ 2.37, 2.08, 2.18, 2.26 ]}
-  m_currentLoad: JSON; // { avgload: 0.39, 
+  m_time: JSON = null; // { current: 1537738139158, uptime: 162844, timezone: 'GMT-0700', timezoneName: 'PDT' }
+  m_cpuCurrentspeed: JSON = null; // { min: 2.08, max: 2.37, avg: 2.22, cores: [ 2.37, 2.08, 2.18, 2.26 ]}
+  m_currentLoad: JSON = null; // { avgload: 0.39, 
     // currentload: 24.057217165149545, currentload_user: 14.174252275682706, currentload_system: 9.882964889466841,
     //   currentload_nice: 0, currentload_idle: 75.94278283485045, currentload_irq: 0, 
     // raw_currentload: 18500, raw_currentload_user: 10900, raw_currentload_system: 7600,
     //   raw_currentload_nice: 0, raw_currentload_idle: 58400, raw_currentload_irq: 0,
     // cpus: [ [Object], [Object], [Object], [Object] ] }
-  m_battery: JSON; // { hasbattery: true, cyclecount: 0, ischarging: true, maxcapacity: 7200000, currentcapacity: 3714000,
+  m_battery: JSON = null; // { hasbattery: true, cyclecount: 0, ischarging: true, maxcapacity: 7200000, currentcapacity: 3714000,
     // percent: 66, timeremaining: -1, acconnected: true, type: 'Li-poly', model: 'DELL G95J55A', manufacturer: 'LGC-LGC3.6', serial: '39316' },
-  m_mem: JSON; // { total: 16685002752, free: 7433994240, used: 9250525184, active: 3559079936, available: 12176764928,
+  m_mem: JSON = null; // { total: 16685002752, free: 7433994240, used: 9250525184, active: 3559079936, available: 12176764928,
     //  buffcache: 5691928576, swaptotal: 2147479552, swapused: 0, swapfree: 2147479552 }
-  m_fsStats: JSON; // { rx: 2899178496, wx: 220202770432, tx: 223101948928, rx_sec: 0, wx_sec: 8497.92531120332, tx_sec: 8497.92531120332, ms: 1928 }
-  m_disksIO: JSON; // { rIO: 306733, wIO: 48577, tIO: 355310, rIO_sec: 0, wIO_sec: 1.0368066355624677, tIO_sec: 1.0368066355624677, ms: 1929 }
+  m_fsStats: JSON = null; // { rx: 2899178496, wx: 220202770432, tx: 223101948928, rx_sec: 0, wx_sec: 8497.92531120332, tx_sec: 8497.92531120332, ms: 1928 }
+  m_disksIO: JSON = null; // { rIO: 306733, wIO: 48577, tIO: 355310, rIO_sec: 0, wIO_sec: 1.0368066355624677, tIO_sec: 1.0368066355624677, ms: 1929 }
 
   /** Start communicating */
   constructor(hostandport: string) {  
@@ -93,12 +93,32 @@ export class Endpoint {
         this.m_net = response.data.net;
         //this.m_memLayout = response.data.memLayout;
         //this.m_diskLayout = response.data.diskLayout;
-
+        onEndpointNew(this.serializeStaticData());
       })
       .catch(error => {
         this.m_iResponses++;
         console.log(`Cant connect to ${this.m_hostandport} errno: ${error.errno}`);
       });
+    return;
+  }
+
+  /** Static data were just received.  Serialize it. */
+  serializeStaticData() : String {
+    return "{"
+      + 'hostandport:' + JSON.stringify(this.m_hostandport) + ','
+      + 'system:' + JSON.stringify(this.m_system) + ','
+      + 'os:' + JSON.stringify(this.m_os) + ','
+      + 'cpu:' + JSON.stringify(this.m_cpu) + ','
+      + 'net:' + JSON.stringify(this.m_net) + ','
+      + "}";
+  }
+  /** Save a short update into the sink */
+  serializeUpdate() : String {
+    return '{'
+      + 'hostandport:' + JSON.stringify(this.m_hostandport) + ','
+      + 'cpuCurrentspeed:' + JSON.stringify(this.m_cpuCurrentspeed)  + ','
+      + 'currentLoad:' + JSON.stringify(this.m_currentLoad)
+      + '}';
   }
 
   /** called periodically from the main module, updates dynamic data from this endpoint */
@@ -106,14 +126,13 @@ export class Endpoint {
     if(this.m_version == null) {
       // we never got response to getStaticData yet
       console.log(`onInterval ${this.m_hostandport} - waiting for static data`);
-      return;
     }
     if(this.m_iRequests != this.m_iResponses) {
       // we are still waiting for the respose
       console.log(`onInterval ${this.m_hostandport} - response pending`);
-      return;
     }
     console.log(`onInterval ${this.m_hostandport}`);
+    // issue an update request to the endpoint
     this.m_iRequests++;
     axios.get(this.m_urlBase + 'getDynamicData')
       .then(response => {
@@ -134,11 +153,12 @@ export class Endpoint {
         this.m_mem = response.data.mem;
         this.m_fsStats = response.data.fsStats;
         this.m_disksIO = response.data.disksIO;
+        onEndpointUpdate(this.serializeUpdate());
       })
       .catch(error => {
         this.m_iResponses++;
         console.log(`Failed to get update from ${this.m_hostandport}, errno: ${error.errno}`);
       });
+    return;
   }
-
 }

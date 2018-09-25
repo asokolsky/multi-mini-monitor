@@ -1,6 +1,6 @@
 # multi-mini-monitor
 
-This is an [electron](https://electronjs.org) application presenting the realtime status of the multiple remote hosts exposed by multiple remote [systeminformation-api](https://github.com/asokolsky/systeminformation-api) REST services.
+This is an [electron](https://electronjs.org) application presenting the realtime status of the multiple remote hosts exposed via [systeminformation-api](https://github.com/asokolsky/systeminformation-api) REST services.
 
 # Installing
 
@@ -18,4 +18,7 @@ npm start
 
 This is a work in progress.
 
-Build works as a VSCode task (using tsc).  Gulp is still broken.
+Build works as a VSCode task (using tsc) - just press Ctrl+Shift+B.  
+
+Gulp is still broken.
+

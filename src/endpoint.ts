@@ -4,14 +4,22 @@ import { URL } from 'url';
 import axios from 'axios';
 
 /**
- * This is a abstraction of an endpoint 
- * running systeminformation REST service
+ * This is a abstraction of an endpoint, running systeminformation REST service.
+ * The instances of this class belong to MAIN process.
  */
 export class Endpoint {
+  /** looks like 'duo:3000' */
+  m_hostandport: String;
   /** Something like 'http://192.168.1.1:4000/api/systeminformation/' */
-  m_urlBase: URL;
-  /** begin statis data */
-  m_version: string = null; // 3.45.5 - that of systeminformation
+  m_urlBase: String;
+
+  /**  counter of HTTP GETs we sent to endpoint  */
+  m_iRequests = 0;
+  /**  counter of responses to our HTTP GETs we processed  */
+  m_iResponses = 0;
+
+  /** begin static data */
+  m_version: String = null; // 3.45.5 - that of systeminformation
   m_system: JSON; // { manufacturer: '', model: 'Computer', version: '', serial: '-', uuid: '-', sku: '-' }
   //m_bios: JSON; // { vendor: '', version: '', releaseDate: '', revision: '' }
   //m_baseboard: JSON; // { manufacturer: '', model: '', version: '', serial: '-', assetTag: '-' }
@@ -32,6 +40,7 @@ export class Endpoint {
     // {iface: 'wlp2s0', ip4: '192.168.1.216', ip6: 'fe80::ac10:3730:5abd:700d', mac: '18:5e:0f:31:0e:61', internal: false }]
   //m_memLayout: JSON[]; //
   //m_diskLayout: JSON[];
+
   /** begin dynamic data */
   m_time: JSON; // { current: 1537738139158, uptime: 162844, timezone: 'GMT-0700', timezoneName: 'PDT' }
   m_cpuCurrentspeed: JSON; // { min: 2.08, max: 2.37, avg: 2.22, cores: [ 2.37, 2.08, 2.18, 2.26 ]}
@@ -47,15 +56,18 @@ export class Endpoint {
     //  buffcache: 5691928576, swaptotal: 2147479552, swapused: 0, swapfree: 2147479552 }
   m_fsStats: JSON; // { rx: 2899178496, wx: 220202770432, tx: 223101948928, rx_sec: 0, wx_sec: 8497.92531120332, tx_sec: 8497.92531120332, ms: 1928 }
   m_disksIO: JSON; // { rIO: 306733, wIO: 48577, tIO: 355310, rIO_sec: 0, wIO_sec: 1.0368066355624677, tIO_sec: 1.0368066355624677, ms: 1929 }
- 
 
+  /** Start communicating */
   constructor(hostandport: string) {  
     console.log(`Endpoint(${hostandport})`);
-    this.m_urlBase = new URL('http://' + hostandport + '/api/systeminformation/');
+    this.m_hostandport = hostandport;
+    this.m_urlBase = 'http://' + hostandport + '/api/systeminformation/';
 
     // start querying the endpoint...
-    axios.get(this.m_urlBase.toString() + 'getStaticData')
+    this.m_iRequests++;
+    axios.get(this.m_urlBase + 'getStaticData')
       .then(response => {
+        this.m_iResponses++;
         console.log(`Response from ${hostandport}`);
         /*console.log('version', response.data.version);
         console.log('system', response.data.system);
@@ -82,35 +94,51 @@ export class Endpoint {
         //this.m_memLayout = response.data.memLayout;
         //this.m_diskLayout = response.data.diskLayout;
 
-        setInterval(() => {
-          axios.get(this.m_urlBase.toString() + 'getDynamicData')
-            .then(response => {
-              console.log(`Update from ${hostandport}`);
-              //console.log(response.data);
-              /*console.log('time', response.data.time);
-              console.log('cpuCurrentspeed', response.data.cpuCurrentspeed);
-              console.log('currentLoad', response.data.currentLoad);
-              console.log('battery', response.data.battery);
-              console.log('mem', response.data.mem);
-              console.log('fsStats', response.data.fsStats);
-              console.log('disksIO', response.data.disksIO);*/
-              this.m_time = response.data.time;
-              this.m_cpuCurrentspeed = response.data.cpuCurrentspeed;
-              this.m_currentLoad = response.data.currentLoad;
-              this.m_battery = response.data.battery;
-              this.m_mem = response.data.mem;
-              this.m_fsStats = response.data.fsStats;
-              this.m_disksIO = response.data.disksIO;
-            
-            })
-            .catch(error => {
-              console.log(`Failed to get update from ${hostandport}, errno: ${error.errno}`);
-            });
-        }, 2000);
-
       })
       .catch(error => {
-        console.log(`Cant connect to ${hostandport} errno: ${error.errno}`);
+        this.m_iResponses++;
+        console.log(`Cant connect to ${this.m_hostandport} errno: ${error.errno}`);
       });
   }
+
+  /** called periodically from the main module, updates dynamic data from this endpoint */
+  onInterval() {
+    if(this.m_version == null) {
+      // we never got response to getStaticData yet
+      console.log(`onInterval ${this.m_hostandport} - waiting for static data`);
+      return;
+    }
+    if(this.m_iRequests != this.m_iResponses) {
+      // we are still waiting for the respose
+      console.log(`onInterval ${this.m_hostandport} - response pending`);
+      return;
+    }
+    console.log(`onInterval ${this.m_hostandport}`);
+    this.m_iRequests++;
+    axios.get(this.m_urlBase + 'getDynamicData')
+      .then(response => {
+        this.m_iResponses++;
+        console.log(`Update from ${this.m_hostandport}`);
+        //console.log(response.data);
+        /*console.log('time', response.data.time);
+        console.log('cpuCurrentspeed', response.data.cpuCurrentspeed);
+        console.log('currentLoad', response.data.currentLoad);
+        console.log('battery', response.data.battery);
+        console.log('mem', response.data.mem);
+        console.log('fsStats', response.data.fsStats);
+        console.log('disksIO', response.data.disksIO);*/
+        this.m_time = response.data.time;
+        this.m_cpuCurrentspeed = response.data.cpuCurrentspeed;
+        this.m_currentLoad = response.data.currentLoad;
+        this.m_battery = response.data.battery;
+        this.m_mem = response.data.mem;
+        this.m_fsStats = response.data.fsStats;
+        this.m_disksIO = response.data.disksIO;
+      })
+      .catch(error => {
+        this.m_iResponses++;
+        console.log(`Failed to get update from ${this.m_hostandport}, errno: ${error.errno}`);
+      });
+  }
+
 }

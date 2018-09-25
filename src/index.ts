@@ -41,13 +41,23 @@ if(args.help) {
 /**
  * Global array for storing the endpoints - initiate connection
  */
-const endpoints: Endpoint[] = new Array(strEndpoints.length);
+const g_endpoints: Endpoint[] = new Array(strEndpoints.length);
 
 for(let i = 0; i < strEndpoints.length; i++) {
   let endpoint = strEndpoints[i];
   //trace(endpoint);
-  endpoints[i] = new Endpoint(endpoint);
+  // the following will initiate network comunication with endpoints
+  g_endpoints[i] = new Endpoint(endpoint);
 }
+
+/** called every so often, like once every 1000ms */
+function onInterval() {
+  for(let i = 0; i < g_endpoints.length; i++) {
+    let endpoint = g_endpoints[i];
+    endpoint.onInterval();
+  }
+}
+
 console.log("index:", process.type);
 
 /**
@@ -135,6 +145,8 @@ app.on('ready', () => {
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
   createElectronShell();
+
+  setInterval(onInterval, 2000);
 });
 
 /** 

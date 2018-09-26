@@ -105,19 +105,19 @@ export class Endpoint {
   /** Static data were just received.  Serialize it. */
   serializeStaticData() : String {
     return "{"
-      + 'hostandport:' + JSON.stringify(this.m_hostandport) + ','
-      + 'system:' + JSON.stringify(this.m_system) + ','
-      + 'os:' + JSON.stringify(this.m_os) + ','
-      + 'cpu:' + JSON.stringify(this.m_cpu) + ','
-      + 'net:' + JSON.stringify(this.m_net) + ','
+      + '"hostandport":' + JSON.stringify(this.m_hostandport) + ','
+      + '"system":' + JSON.stringify(this.m_system) + ','
+      + '"os":' + JSON.stringify(this.m_os) + ','
+      + '"cpu":' + JSON.stringify(this.m_cpu) + ','
+      + '"net":' + JSON.stringify(this.m_net) //+ ','
       + "}";
   }
   /** Save a short update into the sink */
   serializeUpdate() : String {
     return '{'
-      + 'hostandport:' + JSON.stringify(this.m_hostandport) + ','
-      + 'cpuCurrentspeed:' + JSON.stringify(this.m_cpuCurrentspeed)  + ','
-      + 'currentLoad:' + JSON.stringify(this.m_currentLoad)
+      + '"hostandport":' + JSON.stringify(this.m_hostandport) + ','
+      + '"cpuCurrentspeed":' + JSON.stringify(this.m_cpuCurrentspeed)  + ','
+      + '"currentLoad":' + JSON.stringify(this.m_currentLoad)
       + '}';
   }
 
@@ -125,19 +125,21 @@ export class Endpoint {
   onInterval() {
     if(this.m_version == null) {
       // we never got response to getStaticData yet
-      console.log(`onInterval ${this.m_hostandport} - waiting for static data`);
+      //console.log(`onInterval ${this.m_hostandport} - waiting for static data`);
+      return;
     }
     if(this.m_iRequests != this.m_iResponses) {
       // we are still waiting for the respose
-      console.log(`onInterval ${this.m_hostandport} - response pending`);
+      //console.log(`onInterval ${this.m_hostandport} - response pending`);
+      return;
     }
-    console.log(`onInterval ${this.m_hostandport}`);
+    //console.log(`onInterval ${this.m_hostandport}`);
     // issue an update request to the endpoint
     this.m_iRequests++;
     axios.get(this.m_urlBase + 'getDynamicData')
       .then(response => {
         this.m_iResponses++;
-        console.log(`Update from ${this.m_hostandport}`);
+        //console.log(`Update from ${this.m_hostandport}`);
         //console.log(response.data);
         /*console.log('time', response.data.time);
         console.log('cpuCurrentspeed', response.data.cpuCurrentspeed);

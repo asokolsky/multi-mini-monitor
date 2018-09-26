@@ -15,6 +15,7 @@ const args = minimist(process.argv.slice(2), {
 });
 //debug(args);
 const strEndpoints = args._;
+                     // = ["localhost:3000"];
 
 if(args.help) {
   console.log('Command line spec: host1:port1 [host2:port2]');

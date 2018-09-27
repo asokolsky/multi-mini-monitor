@@ -119,7 +119,7 @@ export interface ISIdisksIO {
 /**
  * My Interfaces used for Main\Renderer IPC
  */
-export interface IEndpointStatic {
+export class EndpointStatic {
     hostandport: string;
     version: string;
     system: ISIsystem;
@@ -128,7 +128,7 @@ export interface IEndpointStatic {
     net: ISInetIface[];
 }
 
-export interface IEndpointDynamic {
+export class EndpointDynamic {
     hostandport: string;
     time: ISItime;
     cpuCurrentspeed: ISIcpuCurrentSpeed;

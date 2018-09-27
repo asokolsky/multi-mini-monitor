@@ -2,10 +2,20 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-
     color: #333;
     font-family: 'Open Sans', sans-serif;
     text-align: left;
+}
+
+table {
+    border-collapse: collapse;
+    /*width: 80%;*/
+}
+td {
+    vertical-align: top;
+}
+table, th, td {
+    border: 1px solid grey;
 }
 
 /* Tooltip container */
@@ -18,9 +28,9 @@ body {
 /* Tooltip text */
 .tooltip .tooltiptext {
     visibility: hidden;
-    width: 120px;
-   /* background-color: black;
-    color: #fff;*/
+    /*width: 120px;*/
+    background-color: yellow;
+    /* color:black; */
     text-align: left;
     padding: 5px 0;
     border-radius: 6px;
@@ -29,8 +39,17 @@ body {
     position: absolute;
     z-index: 1;
 }
-
 /* Show the tooltip text when you mouse over the tooltip container */
 .tooltip:hover .tooltiptext {
     visibility: visible;
+}
+h1 {
+    color: blue;
+    /*font-family: verdana;*/
+    font-size: 100%;
+    text-align: center;
+}
+p {
+    /*border: 1px solid powderblue;*/
+    padding: 20px;
 }

@@ -45,6 +45,37 @@ export interface ISInetIface {
     mac: string; // '18:5e:0f:31:0e:61', 
     internal: boolean; // false
 }
+
+export interface ISImemLayout {
+    size: number; // 8589934592
+    bank: string; // ""
+    type: string; // "DDR3"
+    clockSpeed: number; // 1867
+    formFactor: string; // "SODIMM"
+    manufacturer: string; // "1315"
+    partNum: string; // "CT102464BF186D.C16"
+    serialNum: string; // "E06B4444"
+    voltageConfigured: string; // null
+    voltageMin: string; // null
+    voltageMax: string; // null
+}
+
+export interface ISIdiskLayout {
+    name: string; // "SAMSUNG SSD SM841N mSATA 256GB SED"
+    vendor: string; // "(Standard disk drives)"
+    size: number; // 256052966400
+    bytesPerSector: number; // 512
+    totalCylinders: number; // 31130
+    totalHeads: number; // 255
+    totalSectors: number; // 500103450
+    totalTracks: number; // 7938150
+    tracksPerCylinder: number; // 255
+    sectorsPerTrack: number; // 63
+    firmwareRevision: string; // "DXM45D6Q"
+    serialNum: string; // "S1L2NYAF806496"
+    interfaceType: string; // "IDE"
+    smartStatus: string; // "Ok"
+}
 export interface ISItime {
     current: number; // 1537738139158, 
     uptime: number; // 162844, 
@@ -116,6 +147,13 @@ export interface ISIdisksIO {
     tIO_sec: number; // 1.0368066355624677, 
     ms: number; // 1929
 }
+
+export interface ISItemp {
+    main: number;       // -120.15, 
+    cores: number[];    // [ 27.8, -268.1 ], 
+    max: number;        // 27.8
+}
+
 /**
  * My Interfaces used for Main\Renderer IPC
  */
@@ -126,6 +164,8 @@ export class EndpointStatic {
     os: ISIos;
     cpu: ISIcpu; 
     net: ISInetIface[];
+    memLayout: ISImemLayout[];
+    diskLayout: ISIdiskLayout[];
 }
 
 export class EndpointDynamic {
@@ -133,8 +173,9 @@ export class EndpointDynamic {
     time: ISItime;
     cpuCurrentspeed: ISIcpuCurrentSpeed;
     currentLoad: ISIcurrentLoad;
-    battery: ISIbattery;
+    temp: ISItemp;
     mem: ISImem; 
+    battery: ISIbattery;
     fsStats: ISIfsStats;
     disksIO: ISIdisksIO;
 }

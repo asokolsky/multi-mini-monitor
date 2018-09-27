@@ -128,7 +128,7 @@ function createElectronShell() {
     win = null 
   });
   // Opens the chrome devtool
-  win.webContents.openDevTools();
+  //win.webContents.openDevTools();
   win.once('ready-to-show', () => {
     win.show();
   });

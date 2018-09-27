@@ -1,6 +1,6 @@
 'use strict';
 import {ipcRenderer} from 'electron';
-import {EndpointStatic, EndpointDynamic} from './interfaces';
+import {ISImemLayout, EndpointStatic, EndpointDynamic} from './interfaces';
 
 //const remote = require('remote');
 //const dialog = remote.require('dialog'); 
@@ -9,12 +9,25 @@ import {EndpointStatic, EndpointDynamic} from './interfaces';
 //document.write(process.versions.node);
 console.log("renderer:", process.type);
 
+function getTotalGB(mem: ISImemLayout[]) : number {
+  let tot = 0;
+  for(let i = 0; i < mem.length; i++) {
+    tot += mem[i].size;
+  }
+  return tot/1073741824; //  JEDEC memory standards use gigabyte as 1073741824bytes (2^30 bytes)
+}
+
 ipcRenderer.on('endpoint-new', (event: any, arg: string) => {
     const row = document.getElementById("endpoints") as HTMLTableRowElement;
     const x = row.insertCell(-1);
     const endpoint:EndpointStatic = JSON.parse(arg);
-    const tttext = `${endpoint.cpu.manufacturer} ${endpoint.cpu.brand} ${endpoint.cpu.speed}<br>` + 
-        `${endpoint.os.distro} ${endpoint.os.release} ${endpoint.os.arch}<br>`;
+    const totalMemory = getTotalGB(endpoint.memLayout);
+    let tttext = `${endpoint.cpu.manufacturer} ${endpoint.cpu.brand} ${endpoint.cpu.speed}GHz<br>` +    // CPU
+        `${totalMemory}GB ${endpoint.memLayout[0].type} ${endpoint.memLayout[0].formFactor}<br>`;       // RAM
+    for(let i = 0; i < endpoint.diskLayout.length; i++) {                                               // HD
+        tttext += `disk${i}: ${endpoint.diskLayout[i].name}<br>`;        
+    }
+    tttext += `${endpoint.os.distro} ${endpoint.os.release} ${endpoint.os.arch}<br>`;                   // OS
     x.innerHTML = `<div class="tooltip"><h1>${endpoint.os.hostname}</h1>` + 
         `<p id="${endpoint.hostandport}"></p><span class="tooltiptext">${tttext}</span></div>`;
     //console.log('endpoint-new', endpoint);
@@ -29,9 +42,9 @@ ipcRenderer.on('endpoint-update', (event: any, arg: string) => {
         return;
     }
     const currentload = Math.round(endpoint.currentLoad.currentload);
-    const temp = 40; // endpoint.
+    const temp = endpoint.temp.max;
     const mem = Math.round(endpoint.mem.used / endpoint.mem.total * 100);
-    p.innerHTML = `CPU: ${currentload}%<br>Temp: ${temp}C<br>Mem: ${mem}%`;
+    p.innerHTML = `CPU: ${currentload}%<br>Temp: ${temp}°C<br>Mem: ${mem}%`;
     //console.log('endpoint-update', endpoint);
     //console.log('endpoint-update currentload', currentload);
 })

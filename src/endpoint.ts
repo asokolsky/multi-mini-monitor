@@ -58,8 +58,8 @@ export class Endpoint {
         //r.m_gcontrollers = response.data.graphics.controllers;
         //r.m_gdisplays = response.data.graphics.displays;
         r.net = response.data.net;
-        //r.m_memLayout = response.data.memLayout;
-        //r.m_diskLayout = response.data.diskLayout;
+        r.memLayout = response.data.memLayout;
+        r.diskLayout = response.data.diskLayout;
         onEndpointNew(JSON.stringify(r));
       })
       .catch(error => {
@@ -92,8 +92,11 @@ export class Endpoint {
         /*console.log('time', response.data.time);
         console.log('cpuCurrentspeed', response.data.cpuCurrentspeed);
         console.log('currentLoad', response.data.currentLoad);
-        console.log('battery', response.data.battery);
+        users[]
+        networkConnections[]
+        console.log('temp', response.data.temp);
         console.log('mem', response.data.mem);
+        console.log('battery', response.data.battery);
         console.log('fsStats', response.data.fsStats);
         console.log('disksIO', response.data.disksIO);*/
         const r = new EndpointDynamic();
@@ -101,8 +104,9 @@ export class Endpoint {
         r.time = response.data.time;
         r.cpuCurrentspeed = response.data.cpuCurrentspeed;
         r.currentLoad = response.data.currentLoad;
-        r.battery = response.data.battery;
+        r.temp = response.data.temp;
         r.mem = response.data.mem;
+        r.battery = response.data.battery;
         r.fsStats = response.data.fsStats;
         r.disksIO = response.data.disksIO;
         onEndpointUpdate(JSON.stringify(r));

@@ -1,13 +1,14 @@
 'use strict';
 import {ipcRenderer} from 'electron';
 import {ISImemLayout, EndpointStatic, EndpointDynamic} from './interfaces';
+const debug = require('debug')('mmm:renderer');
 
 //const remote = require('remote');
 //const dialog = remote.require('dialog'); 
 //const dialog = require('electron').remote.dialog 
 
 //document.write(process.versions.node);
-console.log("renderer:", process.type);
+debug("renderer:", process.type);
 
 function getTotalGB(mem: ISImemLayout[]) : number {
   let tot = 0;
@@ -31,6 +32,7 @@ ipcRenderer.on('endpoint-new', (event: any, arg: string) => {
     x.innerHTML = `<div class="tooltip"><h1>${endpoint.os.hostname}</h1>` + 
         `<p id="${endpoint.hostandport}"></p><span class="tooltiptext">${tttext}</span></div>`;
     //console.log('endpoint-new', endpoint);
+    debug('endpoint-new', endpoint);
 })
 
 ipcRenderer.on('endpoint-update', (event: any, arg: string) => {
@@ -46,5 +48,5 @@ ipcRenderer.on('endpoint-update', (event: any, arg: string) => {
     const mem = Math.round(endpoint.mem.used / endpoint.mem.total * 100);
     p.innerHTML = `CPU: ${currentload}%<br>Temp: ${temp}°C<br>Mem: ${mem}%`;
     //console.log('endpoint-update', endpoint);
-    //console.log('endpoint-update currentload', currentload);
+    debug('endpoint-update', endpoint);
 })

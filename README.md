@@ -14,6 +14,14 @@ npm install
 # Run the app
 npm start
 ```
+
+# Debug Trace
+The package relies on (almost standard) [debug](https://www.npmjs.com/package/debug) package.  Command line to enable this app trace on Windows (powershell, default in vscode):
+```
+$env:DEBUG='mmm:*';electron . localhost:3000
+```
+[More on debug namespace](https://developer.ibm.com/node/2016/10/12/the-node-js-debug-module-advanced-usage)
+
 # TODO
 
 This is a work in progress.

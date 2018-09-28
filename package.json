@@ -8,6 +8,7 @@
   "dependencies": {
     "@types/minimist": "^1.2.0",
     "axios": "^0.18.0",
+    "debug": "^4.0.1",
     "electron": "^2.0.10",
     "minimist": "^1.2.0"
   },

@@ -1,6 +1,8 @@
 'use strict';
 import minimist = require("minimist");
 const pjson = require('../package.json');
+const debug = require('debug')('mmm:index');
+
 /**
  *  Parse the command line
  */
@@ -46,6 +48,7 @@ for(let i = 0; i < g_endpoints.length; i++) {
   // the following will initiate network comunication with endpoints
   g_endpoints[i] = new Endpoint(endpoint);
 }
+debug("g_endpoints", g_endpoints);
 
 /** Global variable - golder of the GUI instance */
 let win: BrowserWindow;
@@ -57,7 +60,7 @@ function onInterval() {
   }
 }
 
-console.log("index:", process.type);
+debug("index:", process.type);
 
 /**
  * Start building GUI
@@ -169,12 +172,12 @@ app.on('activate', () => {
  * handle asynchronous and synchronous messages sent from a renderer
  */
 ipcMain.on('asynchronous-message', (event: any, arg: any) => {
-  console.log('asynchronous-message', arg) // prints "ping"
+  debug('asynchronous-message', arg) // prints "ping"
   event.sender.send('asynchronous-reply', 'pong')
 })
 
 ipcMain.on('synchronous-message', (event: any, arg: any) => {
-  console.log('synchronous-message', arg) // prints "ping"
+  debug('synchronous-message', arg) // prints "ping"
   event.returnValue = 'pong'
 })
 

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { onEndpointNew, onEndpointUpdate } from './index';
 import {ISIsystem, ISIos, ISIcpu, ISInetIface, ISItime, ISIcpuCurrentSpeed, ISIcurrentLoad, ISIbattery, 
   ISImem, ISIfsStats, ISIdisksIO, EndpointStatic, EndpointDynamic} from './interfaces';
+const debug = require('debug')('mmm:endpoint');
 
 /**
  * This is a abstraction of an endpoint, running systeminformation REST service.
